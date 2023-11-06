@@ -1,0 +1,38 @@
+import urlExist from 'url-exist';
+import http from 'http';
+import https from 'https';
+import url from 'url';
+
+let server = http.createServer(async (req,res) => {
+
+    res.setHeader('Access-Control-Allow-Origin','*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    
+
+    var url_parts = url.parse(req.url, true);
+    var {url: urlQuery,options: optionsQuery} = url_parts.query;
+
+    let uri = url.parse(urlQuery)
+    let protocol = uri.protocol === 'https:' ? https : http;
+    optionsQuery = JSON.parse(optionsQuery)
+
+    let options = {...optionsQuery,...{
+        hostname: uri.hostname,
+        port: uri.port,
+        path: `${uri.pathname}${uri.search}`,
+        protocol: uri.protocol,
+    }}
+    if(!(await urlExist(urlQuery))) { res.end("url not found");return }
+
+    try {
+        protocol.get(urlQuery,reso => { 
+            reso.pipe(res)
+        })
+    } catch(err) {}
+})
+
+
+
+server.listen(process.env.PORT ?? 2600,undefined, _ => { 
+    console.log(`it runed ${process.env.PORT ?? 2600}`);
+})
