@@ -21,8 +21,7 @@ let server = http.createServer(async (req,res) => {
     else optionsQuery = {}
 
     if(!(await urlExist(urlQuery))) { res.end("url don't exist");return }
-
-    res.end(axios.get(urlQuery,optionsQuery))
+    res.end((await axios.get(urlQuery,optionsQuery)).data)
     // let options = {...optionsQuery,...{
     //     hostname: uri.hostname,
     //     port: uri.port,
@@ -39,6 +38,6 @@ let server = http.createServer(async (req,res) => {
 
 
 
-server.listen(process.env.PORT ?? 2600,undefined, _ => { 
-    console.log(`it runed ${process.env.PORT ?? 2600}`);
+server.listen(process.env.PORT ?? 2400,undefined, _ => { 
+    console.log(`it runed ${process.env.PORT ?? 2400}`);
 })
