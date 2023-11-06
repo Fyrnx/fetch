@@ -8,9 +8,10 @@ let server = http.createServer(async (req,res) => {
     res.setHeader('Access-Control-Allow-Origin','*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     
-
     var url_parts = url.parse(req.url, true);
     var {url: urlQuery,options: optionsQuery} = url_parts.query;
+
+    if(!urlQuery) {res.end("url not found"); return}
 
     let uri = url.parse(urlQuery)
     let protocol = uri.protocol === 'https:' ? https : http;
@@ -22,7 +23,7 @@ let server = http.createServer(async (req,res) => {
         path: `${uri.pathname}${uri.search}`,
         protocol: uri.protocol,
     }}
-    if(!(await urlExist(urlQuery))) { res.end("url not found");return }
+    if(!(await urlExist(urlQuery))) { res.end("url don't exist");return }
 
     try {
         protocol.get(urlQuery,reso => { 
