@@ -15,7 +15,9 @@ let server = http.createServer(async (req,res) => {
 
     let uri = url.parse(urlQuery)
     let protocol = uri.protocol === 'https:' ? https : http;
-    optionsQuery = JSON.parse(optionsQuery)
+    
+    if(optionsQuery) optionsQuery = JSON.parse(optionsQuery)
+    else optionsQuery = {}
 
     let options = {...optionsQuery,...{
         hostname: uri.hostname,
