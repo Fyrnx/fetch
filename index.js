@@ -1,4 +1,5 @@
 import urlExist from 'url-exist';
+import axios from 'axios';
 import http from 'http';
 import https from 'https';
 import url from 'url';
@@ -19,19 +20,21 @@ let server = http.createServer(async (req,res) => {
     if(optionsQuery) optionsQuery = JSON.parse(optionsQuery)
     else optionsQuery = {}
 
-    let options = {...optionsQuery,...{
-        hostname: uri.hostname,
-        port: uri.port,
-        path: `${uri.pathname}${uri.search}`,
-        protocol: uri.protocol,
-    }}
     if(!(await urlExist(urlQuery))) { res.end("url don't exist");return }
 
-    try {
-        protocol.get(urlQuery,reso => { 
-            reso.pipe(res)
-        })
-    } catch(err) {}
+    res.end(axios.get(urlQuery,optionsQuery))
+    // let options = {...optionsQuery,...{
+    //     hostname: uri.hostname,
+    //     port: uri.port,
+    //     path: `${uri.pathname}${uri.search}`,
+    //     protocol: uri.protocol,
+    // }}
+
+    // try {
+    //     protocol.get(urlQuery,reso => { 
+    //         reso.pipe(res)
+    //     })
+    // } catch(err) {}
 })
 
 
