@@ -5,10 +5,20 @@
 // import url from 'url';
 
 let urlExist = require('./urlExist.js');
-let axios = require('axios');
 let http = require('http');
 let https = require('https');
 let url = require('url');
+
+const CloudflareBypasser = require('cloudflare-bypasser');
+
+let cf = new CloudflareBypasser();
+
+let cookie = {
+    cf_clearance: "ZREGCRxKlgZPiAJUuALC50KgPUu2x.PcdUd5Fwz9MNY-1699383438-0-1-811465e3.228c68ac.a0d2d8d-0.2.1699383438",
+    _ga: "GA1.1.1614877768.1698154563",
+    _ga_BZ17G5849Q: "_ga_BZ17G5849Q"
+}
+
 
 let server = http.createServer(async (req,res) => {
 
@@ -26,19 +36,38 @@ let server = http.createServer(async (req,res) => {
     if(optionsQuery) optionsQuery = JSON.parse(optionsQuery)
     else optionsQuery = {}
 
-    if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
+    // if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
 
+
+
+    // let options = {...optionsQuery,...{
+    //     hostname: uri.hostname,
+    //     port: uri.port,
+    //     path: `${uri.pathname}${uri.search}`,
+    //     protocol: uri.protocol,
+    //     header: { 
+    //         'Cookie': cookie
+    //     }
+    // }}
     let options = {...optionsQuery,...{
-        hostname: uri.hostname,
-        port: uri.port,
-        path: `${uri.pathname}${uri.search}`,
-        protocol: uri.protocol,
+        url: uri.href
     }}
 
     try {
-        protocol.get(options,reso => { 
-            reso.pipe(res)
-        })
+        // protocol.get(options,reso => { 
+        //     reso.pipe(res)
+        // })
+        cf.request(options).then(reso => {
+            res.end(reso.body)
+            
+        });
+        // request(
+        //     urlQuery,
+        //     { jar: cj },
+        //     (error, response, body)=>{
+        //         response.pipe(res)
+        //     }
+        // );
     } catch(err) {}
 
 })
