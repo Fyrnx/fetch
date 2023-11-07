@@ -1,8 +1,14 @@
-import urlExist from 'url-exist';
-import axios from 'axios';
-import http from 'http';
-import https from 'https';
-import url from 'url';
+// import urlExist from 'url-exist';
+// import axios from 'axios';
+// import http from 'http';
+// import https from 'https';
+// import url from 'url';
+
+let urlExist = require('./urlExist.js');
+let axios = require('axios');
+let http = require('http');
+let https = require('https');
+let url = require('url');
 
 let server = http.createServer(async (req,res) => {
 
@@ -22,22 +28,24 @@ let server = http.createServer(async (req,res) => {
 
     if(!(await urlExist(urlQuery))) { res.end("url don't exist");return }
     res.end((await axios.get(urlQuery,optionsQuery)).data)
-    // let options = {...optionsQuery,...{
-    //     hostname: uri.hostname,
-    //     port: uri.port,
-    //     path: `${uri.pathname}${uri.search}`,
-    //     protocol: uri.protocol,
-    // }}
 
-    // try {
-    //     protocol.get(urlQuery,reso => { 
-    //         reso.pipe(res)
-    //     })
-    // } catch(err) {}
 })
-
-
 
 server.listen(process.env.PORT ?? 2400,undefined, _ => { 
     console.log(`it runed ${process.env.PORT ?? 2400}`);
 })
+
+/*
+    let options = {...optionsQuery,...{
+        hostname: uri.hostname,
+        port: uri.port,
+        path: `${uri.pathname}${uri.search}`,
+        protocol: uri.protocol,
+    }}
+
+    try {
+        protocol.get(urlQuery,reso => { 
+            reso.pipe(res)
+        })
+    } catch(err) {}
+*/
