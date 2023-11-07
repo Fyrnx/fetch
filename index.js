@@ -26,8 +26,20 @@ let server = http.createServer(async (req,res) => {
     if(optionsQuery) optionsQuery = JSON.parse(optionsQuery)
     else optionsQuery = {}
 
-    if(!(await urlExist(urlQuery))) { res.end("url don't exist");return }
-    res.end((await axios.get(urlQuery,optionsQuery)).data)
+    if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
+
+    let options = {...optionsQuery,...{
+        hostname: uri.hostname,
+        port: uri.port,
+        path: `${uri.pathname}${uri.search}`,
+        protocol: uri.protocol,
+    }}
+
+    try {
+        protocol.get(options,reso => { 
+            reso.pipe(res)
+        })
+    } catch(err) {}
 
 })
 
