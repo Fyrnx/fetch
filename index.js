@@ -36,29 +36,29 @@ let server = http.createServer(async (req,res) => {
     if(optionsQuery) optionsQuery = JsonPs(optionsQuery)
     else optionsQuery = {}
 
-    // if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
+    if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
 
-    // let options = {...optionsQuery,...{
-    //     hostname: uri.hostname,
-    //     port: uri.port,
-    //     path: `${uri.pathname}${uri.search}`,
-    //     protocol: uri.protocol,
-    //     header: { 
-    //         'Cookie': cookie
-    //     }
-    // }}
     let options = {...optionsQuery,...{
-        url: uri.href
+        hostname: uri.hostname,
+        port: uri.port,
+        path: `${uri.pathname}${uri.search}`,
+        protocol: uri.protocol,
+        header: { 
+            'Cookie': cookie
+        }
     }}
+    // let options = {...optionsQuery,...{
+    //     url: uri.href
+    // }}
 
     try {
-        // protocol.get(options,reso => { 
-        //     reso.pipe(res)
-        // })
-        cf.request(options).then(reso => {
-            res.end(reso.body)
+        protocol.get(options,reso => { 
+            reso.pipe(res)
+        })
+        // cf.request(options).then(reso => {
+        //     res.end(reso.body)
             
-        });
+        // });
     } catch(_err) {}
 
 })
