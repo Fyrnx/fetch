@@ -47,7 +47,6 @@ let server = http.createServer(async (req,res) => {
     // }}
 
     try {
-        console.log(options);
         protocol.get(options,reso => {
             reso.pipe(res)
         }).on("error",_ => { 
