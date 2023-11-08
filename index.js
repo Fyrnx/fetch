@@ -55,6 +55,7 @@ let server = http.createServer(async (req,res) => {
         protocol.get(options,reso => {
             let html = []
             reso.on("data",chunk => { 
+                console.log(chunk.toString());
                 html.push(chunk.toString())
             })
             reso.on("end",_ => { 
