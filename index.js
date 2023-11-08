@@ -9,25 +9,13 @@ let http = require('http');
 let https = require('https');
 let url = require('url');
 
-const CloudflareBypasser = require('cloudflare-bypasser');
-
-let cf = new CloudflareBypasser();
-
-let cookie = {
-    cf_clearance: "ZREGCRxKlgZPiAJUuALC50KgPUu2x.PcdUd5Fwz9MNY-1699383438-0-1-811465e3.228c68ac.a0d2d8d-0.2.1699383438",
-    _ga: "GA1.1.1614877768.1698154563",
-    _ga_BZ17G5849Q: "_ga_BZ17G5849Q"
-}
-
-
 let server = http.createServer(async (req,res) => {
 
     res.setHeader('Access-Control-Allow-Origin','*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     
     var url_parts = url.parse(req.url, true);
-    var {url: urlQuery,options: optionsQuery} = url_parts.query;
-
+    var {url: urlQuery,options: optionsQuery,search_query: searchQuerys} = url_parts.query;
     if(!urlQuery) {res.end("url not found"); return}
 
     let uri = url.parse(urlQuery)
@@ -35,6 +23,7 @@ let server = http.createServer(async (req,res) => {
     
     if(optionsQuery) optionsQuery = JsonPs(optionsQuery)
     else optionsQuery = {}
+    console.log(urlQuery,await urlExist(urlQuery));
 
     if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
 
@@ -43,27 +32,26 @@ let server = http.createServer(async (req,res) => {
         port: uri.port,
         path: `${uri.pathname}${uri.search}`,
         protocol: uri.protocol,
-        header: { 
-            'Cookie': cookie
-        }
-    }}
+    }} 
+
+    searchQuerys = JsonPs(searchQuerys)
+    searchQuerys = Object.entries(searchQuerys).map((entry) => { 
+        let [key,value] = entry
+      return `${encodeURI(key)}=${encodeURI(value)}`
+    }).join("&")
+
+    options.path = options.path.replace(/null/ig,"")
+    options.path += `${options.path.search(/\?/) == -1 ? "?" : "&"}${searchQuerys}`
     // let options = {...optionsQuery,...{
     //     url: uri.href
     // }}
 
     try {
+        console.log(options);
         protocol.get(options,reso => {
-            let html = []
-            reso.on("data",chunk => { 
-                console.log(chunk.toString());
-                html.push(chunk.toString())
-            })
-            reso.on("end",_ => { 
-                html = html.join("")
-                console.log(html);
-                res.end(html)
-            })
-            // reso.pipe(res)
+            reso.pipe(res)
+        }).on("error",_ => { 
+            res.end("error")
         })
         // cf.request(options).then(reso => {
         //     res.end(reso.body)
