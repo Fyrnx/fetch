@@ -53,8 +53,16 @@ let server = http.createServer(async (req,res) => {
 
     try {
         protocol.get(options,reso => {
-            console.log(res);
-            reso.pipe(res)
+            let html = []
+            reso.on("data",chunk => { 
+                html.push(chunk.toString())
+            })
+            reso.on("end",_ => { 
+                html = html.join("")
+                console.log(html);
+                res.end(html)
+            })
+            // reso.pipe(res)
         })
         // cf.request(options).then(reso => {
         //     res.end(reso.body)
