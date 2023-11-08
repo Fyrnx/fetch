@@ -52,7 +52,8 @@ let server = http.createServer(async (req,res) => {
     // }}
 
     try {
-        protocol.get(options,reso => { 
+        protocol.get(options,reso => {
+            console.log(res);
             reso.pipe(res)
         })
         // cf.request(options).then(reso => {
