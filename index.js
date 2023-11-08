@@ -33,12 +33,10 @@ let server = http.createServer(async (req,res) => {
     let uri = url.parse(urlQuery)
     let protocol = uri.protocol === 'https:' ? https : http;
     
-    if(optionsQuery) optionsQuery = JSON.parse(optionsQuery)
+    if(optionsQuery) optionsQuery = JsonPs(optionsQuery)
     else optionsQuery = {}
 
     // if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
-
-
 
     // let options = {...optionsQuery,...{
     //     hostname: uri.hostname,
@@ -61,16 +59,15 @@ let server = http.createServer(async (req,res) => {
             res.end(reso.body)
             
         });
-        // request(
-        //     urlQuery,
-        //     { jar: cj },
-        //     (error, response, body)=>{
-        //         response.pipe(res)
-        //     }
-        // );
-    } catch(err) {}
+    } catch(_err) {}
 
 })
+
+function JsonPs(string) {
+    try {
+        return JSON.parse(string)
+    } catch(_err) {}
+}
 
 server.listen(process.env.PORT ?? 2400,undefined, _ => { 
     console.log(`it runed ${process.env.PORT ?? 2400}`);
