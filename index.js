@@ -23,7 +23,6 @@ let server = http.createServer(async (req,res) => {
     
     if(optionsQuery) optionsQuery = JsonPs(optionsQuery)
     else optionsQuery = {}
-    console.log(urlQuery,await urlExist(urlQuery));
 
     if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
 
@@ -35,7 +34,7 @@ let server = http.createServer(async (req,res) => {
     }} 
 
     searchQuerys = JsonPs(searchQuerys)
-    searchQuerys = Object.entries(searchQuerys).map((entry) => { 
+    if(searchQuerys) searchQuerys = Object.entries(searchQuerys).map((entry) => { 
         let [key,value] = entry
         if(!key || !value) return
         return `${encodeURI(key)}=${encodeURI(value)}`
