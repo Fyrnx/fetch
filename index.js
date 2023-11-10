@@ -37,11 +37,12 @@ let server = http.createServer(async (req,res) => {
     searchQuerys = JsonPs(searchQuerys)
     searchQuerys = Object.entries(searchQuerys).map((entry) => { 
         let [key,value] = entry
-      return `${encodeURI(key)}=${encodeURI(value)}`
-    }).join("&")
+        if(!key || !value) return
+        return `${encodeURI(key)}=${encodeURI(value)}`
+    })?.join("&")
 
     options.path = options.path.replace(/null/ig,"")
-    options.path += `${options.path.search(/\?/) == -1 ? "?" : "&"}${searchQuerys}`
+    options.path += `${options.path.search(/\?/) == -1 ? "?" : "&"}${searchQuerys != undefined ? searchQuerys : ""}`
 
     try {
         protocol.get(options,reso => {
