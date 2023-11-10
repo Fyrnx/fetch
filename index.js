@@ -42,9 +42,6 @@ let server = http.createServer(async (req,res) => {
 
     options.path = options.path.replace(/null/ig,"")
     options.path += `${options.path.search(/\?/) == -1 ? "?" : "&"}${searchQuerys}`
-    // let options = {...optionsQuery,...{
-    //     url: uri.href
-    // }}
 
     try {
         protocol.get(options,reso => {
@@ -52,10 +49,6 @@ let server = http.createServer(async (req,res) => {
         }).on("error",_ => { 
             res.end("error")
         })
-        // cf.request(options).then(reso => {
-        //     res.end(reso.body)
-            
-        // });
     } catch(_err) {}
 
 })
@@ -69,18 +62,3 @@ function JsonPs(string) {
 server.listen(process.env.PORT ?? 2400,undefined, _ => { 
     console.log(`it runed ${process.env.PORT ?? 2400}`);
 })
-
-/*
-    let options = {...optionsQuery,...{
-        hostname: uri.hostname,
-        port: uri.port,
-        path: `${uri.pathname}${uri.search}`,
-        protocol: uri.protocol,
-    }}
-
-    try {
-        protocol.get(urlQuery,reso => { 
-            reso.pipe(res)
-        })
-    } catch(err) {}
-*/
