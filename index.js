@@ -1,6 +1,7 @@
-import http from 'http';
-import https from 'https';
-import url from 'url';
+let urlExist = require('./urlExist.js');
+let http = require('http');
+let https = require('https');
+let url = require('url');
 
 let server = http.createServer(async (req,res) => {
     res.setHeader('Access-Control-Allow-Origin','*');
@@ -15,6 +16,8 @@ let server = http.createServer(async (req,res) => {
     
     if(optionsQuery) optionsQuery = JsonPs(optionsQuery)
     else optionsQuery = {}
+
+    if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
 
     let options = {...optionsQuery,...{
         hostname: uri.hostname,
