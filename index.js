@@ -1,16 +1,8 @@
-// import urlExist from 'url-exist';
-// import axios from 'axios';
-// import http from 'http';
-// import https from 'https';
-// import url from 'url';
-
-let urlExist = require('./urlExist.js');
-let http = require('http');
-let https = require('https');
-let url = require('url');
+import http from 'http';
+import https from 'https';
+import url from 'url';
 
 let server = http.createServer(async (req,res) => {
-
     res.setHeader('Access-Control-Allow-Origin','*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     
@@ -23,8 +15,6 @@ let server = http.createServer(async (req,res) => {
     
     if(optionsQuery) optionsQuery = JsonPs(optionsQuery)
     else optionsQuery = {}
-
-    if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
 
     let options = {...optionsQuery,...{
         hostname: uri.hostname,
@@ -45,6 +35,7 @@ let server = http.createServer(async (req,res) => {
 
     try {
         protocol.get(options,reso => {
+            Object.entries(reso.headers).forEach(header => res.setHeader(...header));
             reso.pipe(res)
         }).on("error",_ => { 
             res.end("error")
