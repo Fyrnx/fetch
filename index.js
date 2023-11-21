@@ -18,7 +18,7 @@ let server = http.createServer(async (req,res) => {
     else optionsQuery = {}
 
     let {passChecking} = JsonPs(fetchOptions)
-    console.log(passChecking);
+    console.log(fetchOptions,passChecking);
     if(!passChecking && !(await urlExist(urlQuery))) { res.end("url don't exist"); return }
 
     let options = {...optionsQuery,...{
