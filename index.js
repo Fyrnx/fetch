@@ -8,7 +8,7 @@ let server = http.createServer(async (req,res) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     
     var url_parts = url.parse(req.url, true);
-    var {url: urlQuery,options: optionsQuery,search_query: searchQuerys} = url_parts.query;
+    var {url: urlQuery,options: optionsQuery,search_query: searchQuerys,fetchOptions} = url_parts.query;
     if(!urlQuery) {res.end("url not found"); return}
 
     let uri = url.parse(urlQuery)
@@ -17,7 +17,8 @@ let server = http.createServer(async (req,res) => {
     if(optionsQuery) optionsQuery = JsonPs(optionsQuery)
     else optionsQuery = {}
 
-    if(!(await urlExist(urlQuery))) { res.end("url don't exist"); return }
+    let {passChecking} = fetchOptions
+    if(!passChecking && !(await urlExist(urlQuery))) { res.end("url don't exist"); return }
 
     let options = {...optionsQuery,...{
         hostname: uri.hostname,
