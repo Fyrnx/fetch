@@ -63,17 +63,16 @@ let server = http.createServer(async (req,res) => {
         console.log(14.2)
     } catch(_err) {}
     console.log(15)
-    
 })
 
 function JsonPs(string) {
+    if(string == undefined) return {}
     console.log(string);
     try {
-        return JSON.parse(string).catch(_ => {
-            console.log("error",_);
-            return Object()
-        })
-    } catch(_err) {}
+        return JSON.parse(string)
+    } catch(_err) {
+        return {}
+    }
 }
 
 server.listen(process.env.PORT ?? 2400,undefined, _ => { 
