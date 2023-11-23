@@ -67,8 +67,12 @@ let server = http.createServer(async (req,res) => {
 })
 
 function JsonPs(string) {
+    console.log(string);
     try {
-        return JSON.parse(string).catch(_ => Object())
+        return JSON.parse(string).catch(_ => {
+            console.log("error",_);
+            return Object()
+        })
     } catch(_err) {}
 }
 
