@@ -68,7 +68,7 @@ let server = http.createServer(async (req,res) => {
 
 function JsonPs(string) {
     try {
-        return JSON.parse(string).catch(_ => {})
+        return JSON.parse(string).catch(_ => Object())
     } catch(_err) {}
 }
 
